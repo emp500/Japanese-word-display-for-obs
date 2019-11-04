@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Word display</title>
+        <meta charset="UTF-8">
+        <style>
+            body {
+                background-color: slategray;
+                padding: 0px;
+                margin: 0px;
+            }
+
+            canvas {
+                background-color: rgb(0,255,0);
+                padding: 0px;
+                margin: 0px;
+            }
+        </style>
+        <script src="words.js"></script>
+        <script>
+            function drawText(c, text1, text2, text3) {
+                let ctx = c.getContext("2d");
+                ctx.font = "32px Arial";
+                ctx.fillStyle = "white";
+                ctx.textAlign = "left";
+                ctx.fillText(`${text1}`, 10, 32);
+                ctx.textAlign = "center";
+                ctx.fillText(`${text2}`, CANVAS_SIZE[0]/2, 32);
+                ctx.textAlign = "right";
+                ctx.fillText(`${text3}`, CANVAS_SIZE[0]-10, 32);
+            }
+
+            var CANVAS_SIZE = [1920, 40];
+
+            // main function, executed on body load
+            function main() {
+                let c = initCanvas("canvas", CANVAS_SIZE[0], CANVAS_SIZE[1]);
+                startSimulation(c);
+            }
+
+            var SECS = 7;
+
+            var INTERVAL = null;
+            var CURRENT_INDEX = 0;
+
+            function startSimulation(c) {
+                drawNextWord(c);
+
+                INTERVAL = setInterval(function() {
+                    drawNextWord(c);
+                },1000*SECS);
+            }
+
+            function drawNextWord(c) {
+                // Clear the canvas
+                clearCanvas(c);
+
+                let word = WORDS[CURRENT_INDEX].split(SEPARATOR);
+
+                if (++CURRENT_INDEX >= WORDS.length) {
+                    CURRENT_INDEX = 0;
+                }
+
+                drawText(c, `${word[0]}`,`${word[1]}`,`${word[2]}`);
+            }
+
+
+            // clear canvas
+            function clearCanvas(canvas){
+				var ctx = canvas.getContext("2d");
+				ctx.clearRect(0,0,CANVAS_SIZE[0],CANVAS_SIZE[1]);
+			}
+
+            // initialize canvas with selected width and height
+            function initCanvas(canvasID, width, height) {
+                let c = document.getElementById(canvasID);
+                let ctx = c.getContext("2d");
+                c.setAttribute("width",width+"px");
+                c.setAttribute("height",height+"px");
+                ctx.canvas.width = width;
+                ctx.canvas.height = height;
+                return c;
+            }
+        </script>
+    </head>
+    <body onload="main()">
+        <canvas id="canvas" tabindex="1"></canvas>   
+    </body>
+</html>
